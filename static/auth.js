@@ -1,10 +1,11 @@
 const registerForm = document.getElementById('register-form');
 const loginForm = document.getElementById('login-form');
-
-registerForm.addEventListener('restr', (event) => {
+registerForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    const {login, password} = registerForm;
-
+    const {login, password, passwordRepeat} = registerForm;
+    if(password.value !== passwordRepeat.value) {
+        return alert('Паролі не співпадають')
+    }
     const user = JSON.stringify({
         login: login.value,
         password: password.value
@@ -14,7 +15,6 @@ registerForm.addEventListener('restr', (event) => {
     xhr.send(user);
     xhr.onload = () => alert(xhr.response);
 });
-
 loginForm?.addEventListener('submit', (event) => {
     event.preventDefault();
     const {login, password} = loginForm;
@@ -25,5 +25,14 @@ loginForm?.addEventListener('submit', (event) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/login');
     xhr.send(user);
-    xhr.onload = () => alert(xhr.response);
+    xhr.onload = () => {
+        if(xhr.status === 200) {
+            const token = xhr.response;
+            document.cookie = `token=${token}`;
+            window.location.assign('/');
+        }
+        else {
+            return alert(xhr.response);
+        }
+    }
 });

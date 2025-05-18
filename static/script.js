@@ -1,4 +1,8 @@
-const socket = io();
+const socket = io({
+  auth: {
+    cookie : document.cookie
+  }
+});
 const messages = document.getElementById('messages');
 const form = document.getElementById('form');
 const input = document.getElementById('input');
@@ -23,11 +27,3 @@ socket.on('message', function(msg) {
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 });
-
-function changeNickname() {
-  let nickname = prompt('Choose your nickname');
-  if (nickname) {
-    socket.emit('set_nickname', nickname);
-  }
-}
-changeNickname();
